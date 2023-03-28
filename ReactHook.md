@@ -136,13 +136,99 @@ function FriendStatusWithCounter(props) {
 Hook을 사용하면 구독을 추가하고 제거하는 로직과 같이 서로 관련 있는 코드들을 한군데에 모아서 작성할 수 있습니다. 
 반면 class 컴포넌트에서는 생명주기 메서드 각각에 쪼개서 넣어야만 했습니다.
 
+---
 
+### ✌️ Hook 사용 규칙
+Hook은 그냥 Javascript 함수이지만, 두 가지 규칙을 준수해야한다.
+- 최상위에서만 Hook을 호출해야 합니다. 반목문, 조건문, 중접된 함수 내에서 Hook을 실행하지 마세요.
+- React 함수 컴포넌트 내에서만 Hook을 호출해야 합니다. 일반 Javascript 함수에서는 Hook을 호출해서는 안됩니다.(직접 작성한 custom Hook 내에서 Hook을 호출할 수 있다.)
 
+---
 
+### 💡 나만의 Hook 만들기
+`higher-order components`와 `render props`가 바로 그것입니다. Custom Hook은 이들 둘과는 달리 컴포넌트 트리에 새 컴포넌트를 추가하지 않고도 이것을 가능하게 해줍니다.
 
+친구의 접속 상태를 구독하기 위해서 `useState`와 `useEffect` Hook을 사용한 `FriendStatus` 컴포넌트 예시를 다시 한번 보겠습니다. 이 로직을 다른 컴포넌트에서도 재사용하고 싶다고 가정을 해봅시다.
 
+먼저, 이 로직을 `useFriendStatus`라는 custom Hook으로 뽑아냅니다.
+```javascript
+import React, { useState, useEffect } from 'react';
 
+function useFriendStatus(friendID) {
+  const [isOnline, setIsOnline] = useState(null);
 
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange);
+    };
+  });
+
+  return isOnline;
+}
+```
+이 Hook은 `friendID`를 인자로 받아서 친구의 접속 상태를 반환해줍니다.
+
+이것을 여러 컴포넌트에서 사용할 수 있습니다.
+
+```javascript
+function FriendStatus(props) {
+  const isOnline = useFriendStatus(props.friend.id);
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+```javascript
+function FriendListItem(props) {
+  const isOnline = useFriendStatus(props.friend.id);
+
+  return (
+    <li style={{ color: isOnline ? 'green' : 'black' }}>
+      {props.friend.name}
+    </li>
+  );
+}
+```
+
+각 컴포넌트의 state는 완전히 독립적입니다. 
+Hook은 state 그 자체가 아니라, ***상태 관련 로직***을 재사용하는 방법입니다.
+실제로 각각의 Hook 호출은 완전히 독립된 state를 가집니다.
+그래서 심지어는 한 컴포넌트 안에서 같은 custom Hook을 두번 쓸 수도 있습니다.
+
+Custom Hook은 기능이라기보다는 컨벤션(convention)에 가깝습니다.
+이름이 "`use`"로 시작하고, 안에서 다른 Hook을 호출한다면 그 함수를 custom Hook이라고 부를 수 있습니다.
+`useSomething`이라는 네이밍 컨벤션은 linter 플러그인이 Hook을 인식하고 버그를 찾을 수 있게 해줍니다.
+
+폼 핸들링, 애니매이션, 선언적 구독(declarative subscriptions), 타이머 등 많은 경우에 custom Hook을 사용할 수 있습니다. 
+
+---
+
+### 🔌 다른 내장 Hook
+보편적이지는 않지만 유용하다고 느낄만한 내장 Hook이 몇 가지 더 있습니다. 
+예를 들어, `useContext`는 컴포넌트를 중첩하지 않고도 React context를 구독할 수 있게 해줍니다.
+
+```javascript
+function Example() {
+  const locale = useContext(LocaleContext);
+  const theme = useContext(ThemeContext);
+  // ...
+}
+```
+
+그리고 `useReducer`는 복잡한 컴포넌트들의 state를 reducer로 관리할 수 있게 해줍니다.
+
+```javascript
+function Todos() {
+  const [todos, dispatch] = useReducer(todosReducer);
+  // ...
+```
 
 ---
 [React 공식문서](https://ko.reactjs.org/docs/hooks-overview.html)
