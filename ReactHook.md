@@ -136,8 +136,6 @@ function FriendStatusWithCounter(props) {
 Hook을 사용하면 구독을 추가하고 제거하는 로직과 같이 서로 관련 있는 코드들을 한군데에 모아서 작성할 수 있습니다. 
 반면 class 컴포넌트에서는 생명주기 메서드 각각에 쪼개서 넣어야만 했습니다.
 
----
-
 
 
 
