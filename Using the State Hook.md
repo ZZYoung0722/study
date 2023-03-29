@@ -162,6 +162,107 @@ React는 해당 변수를 리렌더링할 때 기억하고, 가장 최근에 갱
 
 ---
 
+### state 가져오기
+
+클래스 컴포넌트는 count를 보여주기 위해 `this.state.count`를 사용합니다.
+
+```<p>You clicked {this.state.count} times</p>```
+
+반면 함수 컴포넌트는 `count`를 직접 사용할 수 있습니다.
+
+```<p>You clicked {count} times</p>```
+
+---
+
+### state 갱신하기
+
+클래스 컴포넌트는 `count`를 갱신하기 위해 this.setState()`를 호출합니다.
+```javascript
+ <button onClick={() => this.setState({ count: this.state.count + 1 })}>
+    Click me
+ </button>
+```
+반면 함수 컴포넌트는 `setCount`와 `count` 변수를 가지고 있으므로 `this`를 호출하지 않아도 됩니다.
+```javascript
+<button onClick={() => setCount(count + 1)}>
+    Click me
+</button>
+```
+
+---
+
+### 요약
+```javascript
+ 1:  import React, { useState } from 'react';
+ 2:
+ 3:  function Example() {
+ 4:    const [count, setCount] = useState(0);
+ 5:
+ 6:    return (
+ 7:      <div>
+ 8:        <p>You clicked {count} times</p>
+ 9:        <button onClick={() => setCount(count + 1)}>
+10:         Click me
+11:        </button>
+12:      </div>
+13:    );
+14:  }
+```
+
+- 첫 번째 줄: `useState` Hook을 React에서 가져옵니다.
+- 네 번째 줄: `useState` Hook을 이용하면 state 변수와 해당 state를 갱신할 수 있는 함수가 만들어집니다. 또한, `useState`의 인자의 값으로 `0`을 넘겨주면 `count` 값을 0으로 초기화할 수 있습니다.
+- 아홉 번째 줄: 사용자가 버튼 클릭을 하면 `setCount` 함수를 호출하여 state 변수를 갱신합니다. React는 새로운 `count` 변수를 `Example` 컴포넌트에 넘기며 해당 컴포넌트를 리렌더링합니다.
+
+
+**팁: 대괄호가 의미하는 것은 무엇일까요?**
+
+대괄호를 이용하여 state 변수를 선언하는 것을 보셨을 겁니다.
+
+```const [count, setCount] = useState(0);```
+
+대괄호 왼쪽의 state 변수는 사용하고 싶은 이름으로 선언할 수 있습니다.
+
+```const [fruit, setFruit] = useState('banana');```
+
+위 자바스크립트 문법은 `“배열 구조 분해”`라고 하고, `fruit`과 `setFruit`, 총 2개의 값을 만들고 있습니다. 
+즉, `useState`를 사용하면 `fruit`이라는 첫 번째 값과 `setFruit`라는 두 번째 값을 반환합니다. 아래의 코드와 같은 효과를 낼 수 있습니다.
+
+```javascript
+var fruitStateVariable = useState('banana'); // 두 개의 아이템이 있는 쌍을 반환
+var fruit = fruitStateVariable[0]; // 첫 번째 아이템
+var setFruit = fruitStateVariable[1]; // 두 번째 아이템
+```
+
+`useState`를 이용하여 변수를 선언하면 2개의 아이템 쌍이 들어있는 배열로 만들어집니다. 
+첫 번째 아이템은 현재 변수를 의미하고, 두 번째 아이템은 해당 변수를 갱신해주는 함수입니다. 
+배열 구조 분해라는 특별한 방법으로 변수를 선언해주었기 때문에 `[0]`이나 `[1]`로 배열에 접근하는 것은 좋지 않을 수 있습니다.
+
+**팁: 여러 개의 state 변수를 사용하기**
+
+`[something, setSomething]`의 쌍처럼 state 변수를 선언하는 것은 유용합니다. 왜냐하면 여러 개의 변수를 선언할 때 각각 다른 이름을 줄 수 있기 때문입니다.
+
+```javascript
+function ExampleWithManyStates() {
+  // 여러 개의 state를 선언할 수 있습니다!
+  const [age, setAge] = useState(42);
+  const [fruit, setFruit] = useState('banana');
+  const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
+```
+
+위의 코드는 `age`, `fruit`, `todos`라는 지역 변수를 가지며 개별적으로 갱신할 수 있습니다.
+
+```javascript
+function handleOrangeClick() {
+    // this.setState({ fruit: 'orange' })와 같은 효과를 냅니다.
+    setFruit('orange');
+  }
+```
+
+여러 개의 state 변수를 **사용하지 않아도 됩니다.** 
+state 변수는 객체와 배열을 잘 가지고 있을 수 있으므로 서로 연관있는 데이터를 묶을 수 있습니다. 
+하지만 클래스 컴포넌트의 `this.setState`와 달리 state를 갱신하는 것은 병합하는 것이 아니라 대체하는 것입니다.
+
+
 
 
 
