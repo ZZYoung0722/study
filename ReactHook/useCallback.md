@@ -63,4 +63,8 @@ onSave 함수내의 console.log(name)은 몇번이 호출되어도 "" 빈 문자
 **따라서 onSave 안에서 다른 변수들을 참조하게 된다면, 그 변수들을 useCallback 두번째 파라미터 배열 값으로 넣어준다.
 그럼 이제 onSave 함수는 name이 바뀔때만 재 생성하게 된다.**
 
-
+```javascript
+  const onSave = useCallback(() => {
+    console.log(name);
+  }, [name]);//name이 변경될 때에만 함수 재생성.
+```
