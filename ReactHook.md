@@ -10,8 +10,8 @@
 같은 로직을 한곳으로 모을 수 있어 가독성이 좋다.
 
 ### 기본 Hook
-- [useState](https://github.com/ZZYoung0722/study/blob/main/useState.md)
-- useEffect
+- [useState](https://github.com/ZZYoung0722/study/blob/main/ReactHook/useState.md)
+- [useEffect](https://github.com/ZZYoung0722/study/blob/main/ReactHook/useEffect.md)
 - useContext
 
 ### 추가 Hook
