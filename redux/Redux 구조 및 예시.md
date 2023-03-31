@@ -24,6 +24,6 @@
 
 action이란 type 필드를 가지는 js object로 현재 프로그램에서 무엇이 발생하는지 묘사하는 것
 
-ex) ```{type: 'increment'} , {type: 'addList', payload: text}````
+ex) ```{type: 'increment'} , {type: 'addList', payload: text}```
 
 => 전달할 data가 있다면 payload로 전달하는 것이 관행
